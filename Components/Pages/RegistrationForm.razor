@@ -1,0 +1,82 @@
+@page "/registration"
+@rendermode InteractiveServer
+@using System.ComponentModel.DataAnnotations
+
+@* Munazza - 247263 *@
+
+<div class="container mt-4">
+    <h3>Registration Form</h3>
+    <hr />
+
+    @if (submitted)
+    {
+        <div class="alert alert-success">
+            Form submitted successfully! Welcome @model.FirstName.
+        </div>
+        <button class="btn btn-secondary" @onclick="reset">Go Back</button>
+    }
+    else
+    {
+        <EditForm Model="model" OnValidSubmit="handleSubmit">
+            <DataAnnotationsValidator />
+
+            <div class="mb-3">
+                <label>First Name</label>
+                <InputText class="form-control" @bind-Value="model.FirstName" />
+                <ValidationMessage For="@(() => model.FirstName)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Last Name</label>
+                <InputText class="form-control" @bind-Value="model.LastName" />
+                <ValidationMessage For="@(() => model.LastName)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Email</label>
+                <InputText class="form-control" @bind-Value="model.Email" />
+                <ValidationMessage For="@(() => model.Email)" />
+            </div>
+
+            <div class="mb-3">
+                <label>Phone (optional)</label>
+                <InputText class="form-control" @bind-Value="model.Phone" />
+                <ValidationMessage For="@(() => model.Phone)" />
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+        </EditForm>
+    }
+</div>
+
+@code {
+    FormModel model = new FormModel();
+    bool submitted = false;
+
+    void handleSubmit()
+    {
+        submitted = true;
+    }
+
+    void reset()
+    {
+        submitted = false;
+        model = new FormModel();
+    }
+
+    public class FormModel
+    {
+        [Required(ErrorMessage = "First name is required")]
+        public string FirstName { get; set; } = "";
+
+        [Required(ErrorMessage = "Last name is required")]
+        public string LastName { get; set; } = "";
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Enter a valid email")]
+        public string Email { get; set; } = "";
+
+        [Phone(ErrorMessage = "Enter a valid phone number")]
+        public string? Phone { get; set; }
+    }
+}
